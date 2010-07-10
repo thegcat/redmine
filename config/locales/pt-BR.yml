@@ -932,3 +932,4 @@ pt-BR:
   text_zoom_in: Aproximar zoom
   notice_unable_delete_time_entry: Unable to delete time log entry.
   label_overall_spent_time: Overall spent time
+  notice_successful_create_with_link: "Successful creation: {{link}}"

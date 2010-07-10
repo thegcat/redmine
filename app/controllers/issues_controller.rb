@@ -140,7 +140,12 @@ class IssuesController < ApplicationController
     if @issue.save
       attachments = Attachment.attach_files(@issue, params[:attachments])
       render_attachment_warning_if_needed(@issue)
-      flash[:notice] = l(:notice_successful_create)
+      if params[:continue]
+        link_to_created_issue = render_to_string(:inline => "<%= link_to_issue(issue, :subject => false) %>", :locals => {:issue => @issue})
+        flash[:notice] = l(:notice_successful_create_with_link, :link => link_to_created_issue)
+      else
+        flash[:notice] = l(:notice_successful_create)
+      end
       call_hook(:controller_issues_new_after_save, { :params => params, :issue => @issue})
       respond_to do |format|
         format.html {

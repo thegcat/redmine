@@ -160,6 +160,7 @@ de:
   notice_account_lost_email_sent: Eine E-Mail mit Anweisungen, ein neues Kennwort zu wählen, wurde Ihnen geschickt.
   notice_account_activated: Ihr Konto ist aktiviert. Sie können sich jetzt anmelden.
   notice_successful_create: Erfolgreich angelegt
+  notice_successful_create_with_link: "Erfolgreich angelegt: {{link}}"
   notice_successful_update: Erfolgreich aktualisiert.
   notice_successful_delete: Erfolgreich gelöscht.
   notice_successful_connection: Verbindung erfolgreich.
