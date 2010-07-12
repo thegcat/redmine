@@ -908,3 +908,4 @@ en-GB:
   notice_failed_to_save_members: "Failed to save member(s): {{errors}}."
   label_project_copy_notifications: Send email notifications during the project copy
   notice_successful_create_with_link: "Successful creation: {{link}}"
+  button_edit_associated_wikipage: "Edit associated Wiki page: {{page_title}}"
