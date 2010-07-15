@@ -1,6 +1,6 @@
 <% changesets.each do |changeset| %>
     <div class="changeset <%= cycle('odd', 'even') %>">
-    <p><%= link_to("#{l(:label_revision)} #{changeset.revision}",
+    <p><%= link_to("#{l(:label_revision)} #{changeset.revision}" + (changeset.project.id == project.id ? "" : " (#{changeset.project.name})"),
                 :controller => 'repositories', :action => 'revision', :id => changeset.project, :rev => changeset.revision) %><br />
         <span class="author"><%= authoring(changeset.committed_on, changeset.author) %></span></p>
     <%= textilizable(changeset, :comments) %>
