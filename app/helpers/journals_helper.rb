@@ -27,6 +27,10 @@ module JournalsHelper
       links << link_to_in_place_notes_editor(image_tag('edit.png'), "journal-#{journal.id}-notes", 
                                              { :controller => 'journals', :action => 'edit', :id => journal },
                                                 :title => l(:button_edit)) if editable
+      links << link_to(image_tag('delete.png'),
+                       {:controller => 'journals', :action => 'edit', :id => journal, :notes => ""},
+                       :method => :post, :confirm => (journal.details.empty? ? l(:text_are_you_sure) : l(:text_notes_destroy_confirmation)), 
+                       :title => l(:button_delete_notes)) if editable
     end
     content << content_tag('div', links.join(' '), :class => 'contextual') unless links.empty?
     content << textilizable(journal, :notes)
