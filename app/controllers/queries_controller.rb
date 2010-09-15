@@ -21,14 +21,19 @@ class QueriesController < ApplicationController
   before_filter :find_optional_project, :only => :new
   
   def new
-    @query = Query.new(params[:query])
-    @query.project = params[:query_is_for_all] ? nil : @project
-    @query.user = User.current
-    @query.is_public = false unless User.current.allowed_to?(:manage_public_queries, @project) || User.current.admin?
-    @query.column_names = nil if params[:default_columns]
+    unless params[:duplicate_from]
+      @query = Query.new(params[:query])
+      @query.project = params[:query_is_for_all] ? nil : @project
+      @query.column_names = nil if params[:default_columns]
+      
+      @query.add_filters(params[:fields], params[:operators], params[:values]) if params[:fields]
+      @query.group_by ||= params[:group_by]
+    else
+      @query = Query.new(Query.find(params[:duplicate_from]).attributes.dup.except("id", "created_on", "updated_on", "user_id"))
+    end
     
-    @query.add_filters(params[:fields], params[:operators], params[:values]) if params[:fields]
-    @query.group_by ||= params[:group_by]
+    @query.is_public = false unless User.current.allowed_to?(:manage_public_queries, @project) || User.current.admin?
+    @query.user = User.current
     
     if request.post? && params[:confirm] && @query.save
       flash[:notice] = l(:notice_successful_create)
