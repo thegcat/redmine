@@ -18,7 +18,7 @@
 class QueriesController < ApplicationController
   menu_item :issues
   before_filter :find_query, :except => :new
-  before_filter :find_optional_project, :only => :new
+  before_filter :find_optional_project_and_query, :only => :new
   
   def new
     unless params[:duplicate_from]
@@ -29,7 +29,8 @@ class QueriesController < ApplicationController
       @query.add_filters(params[:fields], params[:operators], params[:values]) if params[:fields]
       @query.group_by ||= params[:group_by]
     else
-      @query = Query.new(Query.find(params[:duplicate_from]).attributes.dup.except("id", "created_on", "updated_on", "user_id"))
+      @query = Query.new(@original_query.attributes.dup.except("id", "created_on", "updated_on", "user_id"))
+      @query.project = @project
     end
     
     @query.is_public = false unless User.current.allowed_to?(:manage_public_queries, @project) || User.current.admin?
@@ -73,8 +74,13 @@ private
     render_404
   end
   
-  def find_optional_project
-    @project = Project.find(params[:project_id]) if params[:project_id]
+  def find_optional_project_and_query
+    if params[:project_id]
+      @project = Project.find(params[:project_id])
+    elsif params[:duplicate_from]
+      @original_query = Query.find(params[:duplicate_from], :include => :project)
+      @project = @original_query.project
+    end
     render_403 unless User.current.allowed_to?(:save_queries, @project, :global => true)
   rescue ActiveRecord::RecordNotFound
     render_404

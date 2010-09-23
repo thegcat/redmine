@@ -127,6 +127,51 @@ class QueriesControllerTest < ActionController::TestCase
     assert_equal [['due_date', 'desc'], ['tracker', 'asc']], query.sort_criteria
   end
   
+  def test_copy_project_query
+    @request.session[:user_id] = 2
+    original_query = Query.find(1)
+    get :new, :duplicate_from => 1
+    new_query = assigns(:query)
+    assert new_query.new_record?
+    assert_equal new_query.filters, original_query.filters
+    assert_equal new_query.column_names, original_query.column_names
+    assert_equal new_query.sort_criteria, original_query.sort_criteria
+    assert_response :success
+    assert_template 'new'
+    assert_tag :tag => 'input', :attributes => { :type => 'text',
+                                                 :name => 'query[name]',
+                                                 :value => original_query.name }
+    assert_tag :tag => 'input', :attributes => { :type => 'checkbox',
+                                                 :name => 'query[is_public]',
+                                                 :checked => 'checked' } 
+    assert_tag :tag => 'input', :attributes => { :type => 'checkbox',
+                                                 :name => 'query_is_for_all',
+                                                 :checked => nil,
+                                                 :disabled => nil }
+  end
+  
+  def test_copy_global_query
+    @request.session[:user_id] = 2
+    original_query = Query.find(3)
+    get :new, :duplicate_from => 3
+    new_query = assigns(:query)
+    assert new_query.new_record?
+    assert_equal new_query.filters, original_query.filters
+    assert_equal new_query.column_names, original_query.column_names
+    assert_equal new_query.sort_criteria, original_query.sort_criteria
+    assert_response :success
+    assert_template 'new'
+    assert_tag :tag => 'input', :attributes => { :type => 'text',
+                                                 :name => 'query[name]',
+                                                 :value => original_query.name }
+    assert_no_tag :tag => 'input', :attributes => { :type => 'checkbox',
+                                                    :name => 'query[is_public]' } 
+    assert_tag :tag => 'input', :attributes => { :type => 'checkbox',
+                                                 :name => 'query_is_for_all',
+                                                 :checked => 'checked',
+                                                 :disabled => nil }
+  end
+  
   def test_get_edit_global_public_query
     @request.session[:user_id] = 1
     get :edit, :id => 4
