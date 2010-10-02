@@ -940,3 +940,5 @@ zh:
   setting_default_notification_option: Default notification option
   label_user_mail_option_only_my_events: Only for things I watch or I'm involved in
   label_user_mail_option_only_assigned: Only for things I am assigned to
+  label_principal_search: "Search for user or group:"
+  label_user_search: "Search for user:"
