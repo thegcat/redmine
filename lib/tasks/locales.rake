@@ -50,7 +50,7 @@ END_DESC
       (puts "Skipping #{path}"; next) if File.basename(path, ".yml") =~ skips
       puts "Deleting selected keys from #{path}"
       orig_content = File.open(path, 'r') {|file| file.read}
-      File.open(path, 'w') {|file| orig_content.each_line {|line| file.puts line unless line =~ delete_regex}}
+      File.open(path, 'w') {|file| orig_content.each_line {|line| file.puts line unless line.chomp =~ delete_regex}}
     end
   end
   
